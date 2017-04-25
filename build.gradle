@@ -1,0 +1,29 @@
+task wrapper(type: Wrapper) { gradleVersion = '3.4.1' }
+
+subprojects {
+	apply plugin: "eclipse"
+	apply plugin: "idea"
+	apply plugin: "java"
+
+	repositories {
+		mavenCentral()
+		maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+	}
+}
+
+project(":core") {
+
+	dependencies {
+		compile 'log4j:log4j:1.2.17'
+		compile 'com.google.code.gson:gson:2.8.0'
+		testCompile group: 'junit', name: 'junit', version: '4.12'
+	}
+}
+
+project(":editor") {
+	dependencies {
+		compile project(':core')
+		testCompile group: 'junit', name: 'junit', version: '4.12'
+	}
+}
