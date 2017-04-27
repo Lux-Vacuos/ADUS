@@ -24,6 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.luxvacuos.adus.utils.Utils;
+
 /**
  * Library, virtual representation of a library.
  * 
@@ -35,6 +37,7 @@ public class Library {
 	private String name;
 	private String version;
 	private String domain;
+	private String md5;
 	private List<Library> dependencies;
 
 	/**
@@ -46,10 +49,11 @@ public class Library {
 	 * @param version
 	 *            Library Version
 	 */
-	public Library(String name, String domain, String version) {
+	public Library(String name, String domain, String version, String md5) {
 		this.name = name;
 		this.version = version;
 		this.domain = domain;
+		this.md5 = md5;
 		dependencies = new ArrayList<>();
 	}
 
@@ -57,12 +61,23 @@ public class Library {
 	 * Download the library and the dependencies
 	 */
 	public void download() {
-		String path = "/" + ProjectVariables.CONFIG.getProject() + "/" + ProjectVariables.CONFIG.getLibrariesPath()
-				+ "/" + domain + "/" + name + "/" + version + "/" + name + "-" + version + ".jar";
-		File lib = new File(ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + path);
+		String path = ProjectVariables.CONFIG.getProject() + "/" + ProjectVariables.CONFIG.getLibrariesPath() + "/"
+				+ domain + "/" + name + "/" + version + "/" + name + "-" + version + ".jar";
+		File lib = new File(ProjectVariables.PREFIX + path);
 		lib.getParentFile().mkdirs();
-		if (!lib.exists())
-			DownloadsHelper.download(lib.getPath(), path);
+		if (lib.exists()) {
+			if (md5 != null)
+				if (!md5.equals("")) {
+					try {
+						if (!md5.equals(Utils.getMD5Checksum(lib))) {
+							DownloadsHelper.download(lib.getPath(), "/" + path);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+		} else
+			DownloadsHelper.download(lib.getPath(), "/" + path);
 		for (Library library : dependencies) {
 			library.download();
 		}
@@ -78,6 +93,10 @@ public class Library {
 
 	public String getVersion() {
 		return version;
+	}
+
+	public String getMd5() {
+		return md5;
 	}
 
 	public List<Library> getDependencies() {

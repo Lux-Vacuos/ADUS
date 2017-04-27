@@ -24,6 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.luxvacuos.adus.utils.Utils;
+
 /**
  * Object for handling versions.
  * 
@@ -37,6 +39,7 @@ public class Version {
 	private String version;
 	private String type;
 	private String main;
+	private String md5;
 	private List<Library> libs;
 
 	/**
@@ -52,12 +55,13 @@ public class Version {
 	 * @param main
 	 *            Main class
 	 */
-	public Version(String name, String domain, String version, String type, String main) {
+	public Version(String name, String domain, String version, String type, String main, String md5) {
 		this.name = name;
 		this.domain = domain;
 		this.version = version;
 		this.type = type;
 		this.main = main;
+		this.md5 = md5;
 		libs = new ArrayList<>();
 	}
 
@@ -66,12 +70,23 @@ public class Version {
 	 * respective libraries and dependencies.
 	 */
 	public void download() {
-		String path = "/" + ProjectVariables.CONFIG.getLibrariesPath() + "/" + domain + "/" + name + "/" + version + "/"
-				+ name + "-" + version + ".jar";
-		File jar = new File(ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + path);
+		String path = ProjectVariables.CONFIG.getProject() + "/" + ProjectVariables.CONFIG.getLibrariesPath() + "/"
+				+ domain + "/" + name + "/" + version + "/" + name + "-" + version + ".jar";
+		File jar = new File(ProjectVariables.PREFIX + path);
 		jar.getParentFile().mkdirs();
-		if (!jar.exists())
-			DownloadsHelper.download(jar.getPath(), "/" + ProjectVariables.CONFIG.getProject() + path);
+		if (jar.exists()) {
+			if (md5 != null)
+				if (!md5.equals("")) {
+					try {
+						if (!md5.equals(Utils.getMD5Checksum(jar))) {
+							DownloadsHelper.download(jar.getPath(), "/" + path);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+		} else
+			DownloadsHelper.download(jar.getPath(), "/" + path);
 		for (Library library : libs) {
 			library.download();
 		}
@@ -95,6 +110,10 @@ public class Version {
 
 	public String getMain() {
 		return main;
+	}
+
+	public String getMd5() {
+		return md5;
 	}
 
 	public List<Library> getLibs() {

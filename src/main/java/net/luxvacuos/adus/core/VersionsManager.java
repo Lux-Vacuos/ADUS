@@ -63,7 +63,7 @@ public class VersionsManager {
 		}
 	}
 
-	public void downloadAndRun(String version, VersionKey key)
+	public void downloadAndRun(String version, VersionKey key, List<String> args)
 			throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		File verf = new File(ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + "/"
 				+ ProjectVariables.CONFIG.getConfigPath() + "/versions/" + version + "/" + key.name + "-" + key.version
@@ -82,18 +82,18 @@ public class VersionsManager {
 		} else {
 			pb = new ProcessBuilder("java", "-XX:+UseG1GC", "-Xmx1G", "-classpath", getClassPath(ver), ver.getMain());
 		}
+		pb.command().addAll(args);
 		try {
 			pb.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
-	public void downloadAndRun() throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+	public void downloadAndRun(List<String> args) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		String key = (String) remoteVersions.getVersions().keySet().toArray()[0];
 		List<VersionKey> versions = remoteVersions.getVersions(key);
-		downloadAndRun(key, versions.get(0));
+		downloadAndRun(key, versions.get(0), args);
 	}
 
 	private String getClassPath(Version ver) {

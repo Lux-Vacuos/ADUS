@@ -20,15 +20,12 @@
 
 package net.luxvacuos.adus.core;
 
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 
 import net.luxvacuos.adus.utils.Logger;
 
@@ -100,11 +97,6 @@ public class ADUS {
 		Logger.log("Config Path: " + conf.getProject() + "/" + conf.getConfigPath());
 		Logger.log("Libraries Path: " + conf.getProject() + "/" + conf.getLibrariesPath());
 		VersionsManager.getVersionsManager().update();
-		try {
-			VersionsManager.getVersionsManager().downloadAndRun();
-		} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public static void main(String[] args) {
