@@ -57,14 +57,12 @@ public class Library {
 	 * Download the library and the dependencies
 	 */
 	public void download() {
-		File lib = new File(ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + "/"
-				+ ProjectVariables.CONFIG.getLibrariesPath() + "/" + domain + "/" + name + "/" + version + "/" + name
-				+ "-" + version + ".jar");
+		String path = "/" + ProjectVariables.CONFIG.getProject() + "/" + ProjectVariables.CONFIG.getLibrariesPath()
+				+ "/" + domain + "/" + name + "/" + version + "/" + name + "-" + version + ".jar";
+		File lib = new File(ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + path);
 		lib.getParentFile().mkdirs();
 		if (!lib.exists())
-			DownloadsHelper.download(lib.getPath(),
-					"/" + ProjectVariables.CONFIG.getProject() + "/" + ProjectVariables.CONFIG.getLibrariesPath() + "/"
-							+ domain + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");
+			DownloadsHelper.download(lib.getPath(), path);
 		for (Library library : dependencies) {
 			library.download();
 		}

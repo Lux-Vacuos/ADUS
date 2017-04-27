@@ -62,18 +62,16 @@ public class Version {
 	}
 
 	/**
-	 * Downloads the jar from the server in {@link Config#getHost()} and
-	 * their respective libraries and dependencies.
+	 * Downloads the jar from the server in {@link Config#getHost()} and their
+	 * respective libraries and dependencies.
 	 */
 	public void download() {
-		File jar = new File(ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + "/"
-				+ ProjectVariables.CONFIG.getLibrariesPath() + "/" + domain + "/" + name + "/" + version + "/" + name
-				+ "-" + version + ".jar");
+		String path = "/" + ProjectVariables.CONFIG.getLibrariesPath() + "/" + domain + "/" + name + "/" + version + "/"
+				+ name + "-" + version + ".jar";
+		File jar = new File(ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + path);
 		jar.getParentFile().mkdirs();
 		if (!jar.exists())
-			DownloadsHelper.download(jar.getPath(),
-					"/" + ProjectVariables.CONFIG.getProject() + "/" + ProjectVariables.CONFIG.getLibrariesPath() + "/"
-							+ domain + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");
+			DownloadsHelper.download(jar.getPath(), "/" + ProjectVariables.CONFIG.getProject() + path);
 		for (Library library : libs) {
 			library.download();
 		}
@@ -94,7 +92,7 @@ public class Version {
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getMain() {
 		return main;
 	}
