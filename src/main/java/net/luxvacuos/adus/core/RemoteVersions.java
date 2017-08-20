@@ -26,6 +26,7 @@ import java.util.Map;
 
 public class RemoteVersions {
 
+	private String branch;
 	private Map<String, List<VersionKey>> versions = new HashMap<>();
 
 	public Map<String, List<VersionKey>> getVersions() {
@@ -34,6 +35,10 @@ public class RemoteVersions {
 
 	public List<VersionKey> getVersions(String key) {
 		return versions.get(key);
+	}
+
+	public String getBranch() {
+		return branch;
 	}
 
 }

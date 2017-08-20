@@ -20,16 +20,15 @@
 
 package net.luxvacuos.adus.core;
 
-public class RemoteVersion {
+import java.util.ArrayList;
+import java.util.List;
+
+public class RemoteBranches {
 	
-	private String version;
+	private List<RemoteBranch> branches = new ArrayList<>();
 	
-	public RemoteVersion(String version) {
-		this.version = version;
-	}
-	
-	public String getVersion() {
-		return version;
+	public List<RemoteBranch> getBranches() {
+		return branches;
 	}
 
 }

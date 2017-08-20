@@ -20,14 +20,22 @@
 
 package net.luxvacuos.adus.core;
 
-public class VersionKey {
+public class RemoteBranch {
 
-	public String version, name, md5;
+	private String branch;
+	private String md5;
 
-	public VersionKey(String name, String version, String md5) {
-		this.version = version;
-		this.name = name;
+	public RemoteBranch(String branch, String md5) {
+		this.branch = branch;
 		this.md5 = md5;
+	}
+
+	public String getBranch() {
+		return branch;
+	}
+
+	public String getMd5() {
+		return md5;
 	}
 
 }

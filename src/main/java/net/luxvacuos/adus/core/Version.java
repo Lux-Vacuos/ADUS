@@ -37,7 +37,6 @@ public class Version {
 	private String name;
 	private String domain;
 	private String version;
-	private String type;
 	private String main;
 	private String md5;
 	private List<Library> libs;
@@ -55,11 +54,10 @@ public class Version {
 	 * @param main
 	 *            Main class
 	 */
-	public Version(String name, String domain, String version, String type, String main, String md5) {
+	public Version(String name, String domain, String version, String branch, String main, String md5) {
 		this.name = name;
 		this.domain = domain;
 		this.version = version;
-		this.type = type;
 		this.main = main;
 		this.md5 = md5;
 		libs = new ArrayList<>();
@@ -94,10 +92,6 @@ public class Version {
 
 	public String getVersion() {
 		return version;
-	}
-
-	public String getType() {
-		return type;
 	}
 
 	public String getDomain() {
