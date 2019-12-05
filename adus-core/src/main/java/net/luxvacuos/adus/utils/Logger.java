@@ -1,7 +1,7 @@
 /*
  * This file is part of Infinity Game Library
  * 
- * Copyright (C) 2017 Lux Vacuos
+ * Copyright (C) 2017-2019 Lux Vacuos
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

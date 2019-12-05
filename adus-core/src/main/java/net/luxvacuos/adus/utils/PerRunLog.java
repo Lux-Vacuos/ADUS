@@ -1,7 +1,7 @@
 /*
  * This file is part of ADUS
  * 
- * Copyright (C) 2017 Lux Vacuos
+ * Copyright (C) 2017-2019 Lux Vacuos
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.ErrorCode;
 
+import net.luxvacuos.adus.core.Device;
 import net.luxvacuos.adus.core.ProjectVariables;
 
 public class PerRunLog extends FileAppender {
@@ -82,7 +83,7 @@ public class PerRunLog extends FileAppender {
 			} else {
 				newFileName = fileName + HIPHEN + timeStampFormat.format(new Date());
 			}
-			return ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + "/" + logFile.getParent() + File.separator + newFileName;
+			return Device.getPrefix() + ProjectVariables.CONFIG.getProject() + "/" + logFile.getParent() + File.separator + newFileName;
 		}
 		return null;
 	}

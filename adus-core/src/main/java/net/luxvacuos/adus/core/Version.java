@@ -1,7 +1,7 @@
 /*
  * This file is part of ADUS
  * 
- * Copyright (C) 2017 Lux Vacuos
+ * Copyright (C) 2017-2019 Lux Vacuos
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,92 +27,91 @@ import java.util.List;
 import net.luxvacuos.adus.utils.Utils;
 
 /**
- * Library, virtual representation of a library.
+ * Object for handling versions.
  * 
  * @author Guerra24 <pablo230699@hotmail.com>
  *
  */
-public class Library {
+public class Version {
 
 	private String name;
-	private String version;
 	private String domain;
+	private String version;
+	private String main;
 	private String md5;
-	private List<Library> dependencies;
+	private List<Library> libs;
 
 	/**
 	 * 
 	 * @param name
-	 *            Library Name
+	 *            Project Name
 	 * @param domain
-	 *            Library Domain
+	 *            Project Domain
 	 * @param version
-	 *            Library Version
+	 *            Project Version
+	 * @param type
+	 *            Type of Version
+	 * @param main
+	 *            Main class
 	 */
-	public Library(String name, String domain, String version, String md5) {
+	public Version(String name, String domain, String version, String branch, String main, String md5) {
 		this.name = name;
-		this.version = version;
 		this.domain = domain;
+		this.version = version;
+		this.main = main;
 		this.md5 = md5;
-		dependencies = new ArrayList<>();
+		libs = new ArrayList<>();
 	}
 
 	/**
-	 * Download the library and the dependencies
+	 * Downloads the jar from the server in {@link Config#getHost()} and their
+	 * respective libraries and dependencies.
 	 */
 	public void download() {
 		String path = ProjectVariables.CONFIG.getProject() + "/" + ProjectVariables.CONFIG.getLibrariesPath() + "/"
 				+ domain + "/" + name + "/" + version + "/" + name + "-" + version + ".jar";
-		File lib = new File(ProjectVariables.PREFIX + path);
-		lib.getParentFile().mkdirs();
-		if (lib.exists()) {
+		File jar = new File(Device.getPrefix() + path);
+		jar.getParentFile().mkdirs();
+		if (jar.exists()) {
 			if (md5 != null)
 				if (!md5.equals("")) {
 					try {
-						if (!md5.equals(Utils.getMD5Checksum(lib))) {
-							DownloadsHelper.download(lib.getPath(), "/" + path);
+						if (!md5.equals(Utils.getMD5Checksum(jar))) {
+							DownloadsHelper.download(jar.getPath(), "/" + path);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 		} else
-			DownloadsHelper.download(lib.getPath(), "/" + path);
-		for (Library library : dependencies) {
+			DownloadsHelper.download(jar.getPath(), "/" + path);
+		for (Library library : libs) {
 			library.download();
 		}
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getDomain() {
-		return domain;
 	}
 
 	public String getVersion() {
 		return version;
 	}
 
+	public String getDomain() {
+		return domain;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getMain() {
+		return main;
+	}
+
 	public String getMd5() {
 		return md5;
 	}
 
-	public List<Library> getDependencies() {
-		return dependencies;
-	}
-
-	public String getClassPath() {
-		StringBuilder builder = new StringBuilder();
-		for (Library library : getDependencies()) {
-			builder.append(ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + "/"
-					+ ProjectVariables.CONFIG.getLibrariesPath() + "/" + library.getDomain() + "/" + library.getName()
-					+ "/" + library.getVersion() + "/" + library.getName() + "-" + library.getVersion() + ".jar"
-					+ ProjectVariables.SEPARATOR);
-			builder.append(library.getClassPath());
-		}
-		return builder.toString();
+	public List<Library> getLibs() {
+		return libs;
 	}
 
 }

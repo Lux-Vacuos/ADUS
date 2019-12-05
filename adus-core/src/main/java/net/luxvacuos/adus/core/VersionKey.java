@@ -1,7 +1,7 @@
 /*
  * This file is part of ADUS
  * 
- * Copyright (C) 2017 Lux Vacuos
+ * Copyright (C) 2017-2019 Lux Vacuos
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,15 +20,14 @@
 
 package net.luxvacuos.adus.core;
 
-import java.util.ArrayList;
-import java.util.List;
+public class VersionKey {
 
-public class RemoteBranches {
-	
-	private List<RemoteBranch> branches = new ArrayList<>();
-	
-	public List<RemoteBranch> getBranches() {
-		return branches;
+	public String version, name, md5;
+
+	public VersionKey(String name, String version, String md5) {
+		this.version = version;
+		this.name = name;
+		this.md5 = md5;
 	}
 
 }

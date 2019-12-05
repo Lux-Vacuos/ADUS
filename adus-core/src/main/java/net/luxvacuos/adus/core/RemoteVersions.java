@@ -1,7 +1,7 @@
 /*
  * This file is part of ADUS
  * 
- * Copyright (C) 2017 Lux Vacuos
+ * Copyright (C) 2017-2019 Lux Vacuos
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,22 +20,25 @@
 
 package net.luxvacuos.adus.core;
 
-public class RemoteBranch {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class RemoteVersions {
 
 	private String branch;
-	private String md5;
+	private Map<String, List<VersionKey>> versions = new HashMap<>();
 
-	public RemoteBranch(String branch, String md5) {
-		this.branch = branch;
-		this.md5 = md5;
+	public Map<String, List<VersionKey>> getVersions() {
+		return versions;
+	}
+
+	public List<VersionKey> getVersions(String key) {
+		return versions.get(key);
 	}
 
 	public String getBranch() {
 		return branch;
-	}
-
-	public String getMd5() {
-		return md5;
 	}
 
 }

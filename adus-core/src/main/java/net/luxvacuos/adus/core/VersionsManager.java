@@ -1,7 +1,7 @@
 /*
  * This file is part of ADUS
  * 
- * Copyright (C) 2017 Lux Vacuos
+ * Copyright (C) 2017-2019 Lux Vacuos
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,35 +24,26 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-import net.luxvacuos.adus.core.ADUS.Platform;
 import net.luxvacuos.adus.utils.Utils;
 
 public class VersionsManager {
 
-	private static VersionsManager versionsManager;
-
-	public static VersionsManager getVersionsManager() {
-		if (versionsManager == null)
-			versionsManager = new VersionsManager();
-		return versionsManager;
-	}
-
-	private File local = new File(ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + "/"
+	private static File local = new File(Device.getPrefix() + ProjectVariables.CONFIG.getProject() + "/"
 			+ ProjectVariables.CONFIG.getConfigPath() + "/branches.json");
-	private Gson gson;
-	private RemoteBranches remoteBranches;
+	private static Gson gson = new Gson();
+	private static RemoteBranches remoteBranches;
 
 	private VersionsManager() {
-		gson = new Gson();
 	}
 
-	public void update() {
+	public static void update() {
 		try {
 			local.getParentFile().mkdirs();
 			DownloadsHelper.download(local.getPath(), "/" + ProjectVariables.CONFIG.getProject() + "/"
@@ -64,11 +55,11 @@ public class VersionsManager {
 		}
 	}
 
-	public void downloadAndRun(String version, String branch, VersionKey key, List<String> args) {
+	public static void downloadAndRun(String version, String branch, VersionKey key, String... args) {
 		String filePath = ProjectVariables.CONFIG.getProject() + "/" + ProjectVariables.CONFIG.getConfigPath()
 				+ "/branches/" + branch + "/" + version + "/" + key.name + "-" + key.version + ".json";
-		File verf = new File(ProjectVariables.PREFIX + filePath);
-		
+		File verf = new File(Device.getPrefix() + filePath);
+
 		verf.getParentFile().mkdirs();
 		if (verf.exists()) {
 			if (key.md5 != null)
@@ -91,13 +82,13 @@ public class VersionsManager {
 		}
 		ver.download();
 		ProcessBuilder pb;
-		if (ADUS.getPlatform().equals(Platform.MACOSX)) {
-			pb = new ProcessBuilder("java", "-XX:+UseG1GC", "-XstartOnFirstThread", "-Xmx1G", "-classpath",
-					getClassPath(ver), ver.getMain());
+		if (Device.getPlatform().equals(Platform.MACOSX)) {
+			pb = new ProcessBuilder("java", "-XX:+UseG1GC", "-XstartOnFirstThread", "-classpath", getClassPath(ver),
+					ver.getMain());
 		} else {
-			pb = new ProcessBuilder("java", "-XX:+UseG1GC", "-Xmx1G", "-classpath", getClassPath(ver), ver.getMain());
+			pb = new ProcessBuilder("java", "-XX:+UseG1GC", "-classpath", getClassPath(ver), ver.getMain());
 		}
-		pb.command().addAll(args);
+		pb.command().addAll(Arrays.asList(args));
 		try {
 			pb.start();
 		} catch (IOException e) {
@@ -105,12 +96,12 @@ public class VersionsManager {
 		}
 	}
 
-	public void downloadAndRun(List<String> args) {
+	public static void downloadAndRun(String... args) {
 		RemoteBranch branch = remoteBranches.getBranches().get(0);
 
 		String fileBranch = ProjectVariables.CONFIG.getProject() + "/" + ProjectVariables.CONFIG.getConfigPath()
 				+ "/branches/" + branch.getBranch() + ".json";
-		File fileBranchF = new File(ProjectVariables.PREFIX + fileBranch);
+		File fileBranchF = new File(Device.getPrefix() + fileBranch);
 		fileBranchF.getParentFile().mkdirs();
 		if (fileBranchF.exists()) {
 			if (branch.getMd5() != null)
@@ -137,18 +128,18 @@ public class VersionsManager {
 		downloadAndRun(key, remoteVersions.getBranch(), versions.get(0), args);
 	}
 
-	private String getClassPath(Version ver) {
+	private static String getClassPath(Version ver) {
 		StringBuilder builder = new StringBuilder();
 		int size = ver.getLibs().size();
 		int count = 0;
-		builder.append(builder.append(ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + "/"
+		builder.append(builder.append(Device.getPrefix() + ProjectVariables.CONFIG.getProject() + "/"
 				+ ProjectVariables.CONFIG.getLibrariesPath() + "/" + ver.getDomain() + "/" + ver.getName() + "/"
 				+ ver.getVersion() + "/" + ver.getName() + "-" + ver.getVersion() + ".jar"
 				+ ProjectVariables.SEPARATOR));
 		for (Library library : ver.getLibs()) {
 			count++;
 			builder.append(library.getClassPath());
-			String file = ProjectVariables.PREFIX + ProjectVariables.CONFIG.getProject() + "/"
+			String file = Device.getPrefix() + ProjectVariables.CONFIG.getProject() + "/"
 					+ ProjectVariables.CONFIG.getLibrariesPath() + "/" + library.getDomain() + "/" + library.getName()
 					+ "/" + library.getVersion() + "/" + library.getName() + "-" + library.getVersion() + ".jar";
 			if (count == size)
