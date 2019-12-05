@@ -31,7 +31,6 @@ public class ADUS {
 	private static Gson gson;
 
 	public static void init() {
-		Thread.currentThread().setName("ADUS");
 		gson = new Gson();
 		Config conf = gson.fromJson(
 				new InputStreamReader(Config.class.getClassLoader().getResourceAsStream("project.json")), Config.class);
@@ -43,7 +42,6 @@ public class ADUS {
 		Logger.log("Config Path: " + conf.getProject() + "/" + conf.getConfigPath());
 		Logger.log("Libraries Path: " + conf.getProject() + "/" + conf.getLibrariesPath());
 		VersionsManager.update();
-		VersionsManager.downloadAndRun();
 	}
 
 	public static void main(String[] args) {
